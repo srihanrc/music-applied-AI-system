@@ -19,6 +19,8 @@ Replace this paragraph with your own summary of what your version does.
 
 Explain your design in plain language.
 
+Real world recommendations work by combining user behavior like the songs they listen to, whether they skip or save the song.This also looks at the mood of the song lyrics the user likes and gives song recommendations of the same mood. This relies on different features like genre and even the artist that the user likes to listen to. My version will prioritize using features genre, mood, energy, tempo_bpm, valence, danceability and acousticness to predict a user's preferred music type
+
 Some prompts to answer:
 
 - What features does each `Song` use in your system
@@ -30,6 +32,9 @@ Some prompts to answer:
 You can include a simple diagram or bullet list if helpful.
 
 ---
+
+The first step Input collects the user's profile like favorite genres, moods, and energy music they prefer. Then for each song in the CSV dataset, this will compare all the songs with the user's preferences and each song will get scored based on how well it matches the user's profile. After scoring every song, the system sorts the scores from greatest to lowest and returns the top scores for user recommendations. For the "Algorithmic Recipe" the system will prioritize the genre song's than any of the other features.
+
 
 ## Getting Started
 
@@ -78,6 +83,46 @@ Paste a sample of your recommender's output here as a text block so a reader can
 #   2. ...
 #   3. ...
 ```
+Loading songs from data/songs.csv...
+
+Loaded songs: 19
+Top recommendations:
+
+Title  : Sunrise City
+Artist : Neon Echo
+Genre  : pop
+Mood   : happy
+Score  : 5.94
+Reasons: genre match +2; mood match +1; energy closeness +2.94
+--------------------------------------------------
+Title  : Gym Hero
+Artist : Max Pulse
+Genre  : pop
+Mood   : intense
+Score  : 4.61
+Reasons: genre match +2; energy closeness +2.61
+--------------------------------------------------
+Title  : Rooftop Lights
+Artist : Indigo Parade
+Genre  : indie pop
+Mood   : happy
+Score  : 3.88
+Reasons: mood match +1; energy closeness +2.88
+--------------------------------------------------
+Title  : Night Drive Loop
+Artist : Neon Echo
+Genre  : synthwave
+Mood   : moody
+Score  : 2.85
+Reasons: energy closeness +2.85
+--------------------------------------------------
+Title  : Midnight Cipher
+Artist : Neon Rhymes
+Genre  : hip hop
+Mood   : hype
+Score  : 2.76
+Reasons: energy closeness +2.76
+--------------------------------------------------
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
 
