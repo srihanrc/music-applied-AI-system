@@ -101,11 +101,12 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
             reasons.append('genre match +2')
 
     # Mood match: +1 point for exact match
-    user_mood = user_prefs.get('mood')
-    if user_mood and isinstance(song.get('mood'), str):
-        if user_mood.strip().lower() == song['mood'].strip().lower():
-            score += 1.0
-            reasons.append('mood match +1')
+    # Temporarily disabled to compare recommendations without mood.
+    # user_mood = user_prefs.get('mood')
+    # if user_mood and isinstance(song.get('mood'), str):
+    #     if user_mood.strip().lower() == song['mood'].strip().lower():
+    #         score += 1.0
+    #         reasons.append('mood match +1')
 
     # Energy similarity: award up to 3 points based on closeness (energy in [0,1])
     target_energy = user_prefs.get('energy') or user_prefs.get('target_energy')
