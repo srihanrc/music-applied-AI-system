@@ -10,9 +10,25 @@ You will implement the functions in recommender.py:
 """
 
 try:
-    from .recommender import load_songs, recommend_songs
-except ImportError:
     from recommender import load_songs, recommend_songs
+    from agentic import (
+        Orchestrator,
+        DataAgent,
+        RecommenderAgent,
+        PolicyAgent,
+        EvalAgent,
+        HumanReviewAgent,
+    )
+except ImportError:
+    from .recommender import load_songs, recommend_songs
+    from .agentic import (
+        Orchestrator,
+        DataAgent,
+        RecommenderAgent,
+        PolicyAgent,
+        EvalAgent,
+        HumanReviewAgent,
+    )
 
 
 def main() -> None:
@@ -45,19 +61,48 @@ def main() -> None:
 
     for profile in profiles:
         user_prefs = profile["prefs"]
-        recommendations = recommend_songs(user_prefs, songs, k=5)
+
+        # If orchestrator is available, run through the agentic workflow
+        if Orchestrator is not None:
+            orchestrator = Orchestrator(
+                agents=[
+                    DataAgent(),
+                    RecommenderAgent(k=5),
+                    PolicyAgent(),
+                    EvalAgent(),
+                    HumanReviewAgent(threshold=0.6),
+                ]
+            )
+            result = orchestrator.run({"user_prefs": user_prefs, "songs": songs})
+            recommendations = result.get("recommendations", [])
+            avg_score = result.get("avg_score")
+            sent_to_human = result.get("sent_to_human", False)
+        else:
+            # fallback: call functional recommender
+            recommendations = [
+                {"song": s, "score": score, "reasons": reasons}
+                for (s, score, reasons) in recommend_songs(user_prefs, songs, k=5)
+            ]
+            avg_score = None
+            sent_to_human = False
 
         print("\n" + "=" * 60)
         print(f"PROFILE: {profile['name']}")
         print(f"Preferences: {user_prefs}")
+        if avg_score is not None:
+            print(f"Avg score: {avg_score:.2f}")
+        print(f"Sent to human review: {sent_to_human}")
         print("=" * 60)
 
-        for song, score, reasons in recommendations:
+        for rec in recommendations:
+            song = rec.get("song")
+            score = rec.get("score", 0.0)
+            reasons = rec.get("reasons") or []
             reason_text = "; ".join(reasons) if reasons else "No strong matches"
-            print(f"Title  : {song['title']}")
-            print(f"Artist : {song['artist']}")
-            print(f"Genre  : {song['genre']}")
-            print(f"Mood   : {song['mood']}")
+            print(f"Title  : {song.get('title')}")
+            print(f"Artist : {song.get('artist')}")
+            print(f"Genre  : {song.get('genre')}")
+            print(f"Mood   : {song.get('mood')}")
             print(f"Score  : {score:.2f}")
             print(f"Reasons: {reason_text}")
             print("-" * 50)

@@ -1,0 +1,64 @@
+%% Project overview Mermaid diagram for music-applied-AI-system
+%% Shows main components, Agentic Workflow, Reliability/Testing, data flow, and human testing
+
+flowchart LR
+  subgraph InputLayer [Input]
+    A1[Data Sources\n(songs.csv, user profiles, logs)]
+    A2[User Interaction\n(queries, feedback)]
+  end
+
+  subgraph Processing [Processing]
+    P1[Preprocessing & Feature Engineering]
+    P2[Recommender Model\n(src/recommender.py)]
+    P3[Agentic Workflow\n(Orchestrator, Agents)]
+  end
+
+  subgraph OutputLayer [Output]
+    O1[Recommendations\n(Top-N playlists, tracks)]
+    O2[Logs & Metrics]
+  end
+
+  subgraph ReliabilityTesting [Reliability & Testing System]
+    T1[Automated Tests\n(tests/test_recommender.py)]
+    T2[Monitoring & Alerts]
+    T3[Human QA / Evaluation]
+  end
+
+  %% Data flow
+  A1 --> P1 --> P2 --> P3 --> O1
+  A2 --> P3
+  P2 --> O2
+  O1 --> T1
+  O1 --> T3
+  O2 --> T2
+
+  %% Feedback loops
+  T1 --> P2:::retrain
+  T2 --> P3:::retrain
+  T3 --> P1:::human_feedback
+  T3 --> P2:::human_feedback
+
+  %% Visual grouping and notes
+  classDef retrain stroke:#2b8cbe,stroke-width:2px;
+  classDef human_feedback stroke:#ff7f0e,stroke-width:2px;
+
+  %% Annotations
+  note1[[Input -> Process -> Output]]
+  A1 -.-> note1
+  note2[[Human testing: vet recommendations, label errors, report edge-cases]]
+  T3 -.-> note2
+
+  %% Where humans are involved
+  T3 ---|"manual evaluation / A/B testing"| O1
+  T3 ---|"labeling & feedback"| P1
+
+  %% Legend
+  subgraph Legend
+    L1[Agentic Workflow: coordinates model + business logic]
+    L2[Reliability: tests, monitoring, human QA]
+  end
+
+  style InputLayer fill:#f9f,stroke:#333,stroke-width:1px
+  style Processing fill:#efe,stroke:#333,stroke-width:1px
+  style OutputLayer fill:#eef,stroke:#333,stroke-width:1px
+  style ReliabilityTesting fill:#ffe,stroke:#333,stroke-width:1px
