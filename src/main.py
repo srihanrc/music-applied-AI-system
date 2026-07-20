@@ -64,6 +64,7 @@ def main() -> None:
 
         # If orchestrator is available, run through the agentic workflow
         if Orchestrator is not None:
+            print("\n[AGENTIC WORKFLOW]")
             orchestrator = Orchestrator(
                 agents=[
                     DataAgent(),
@@ -71,7 +72,8 @@ def main() -> None:
                     PolicyAgent(),
                     EvalAgent(),
                     HumanReviewAgent(threshold=0.6),
-                ]
+                ],
+                debug=True,
             )
             result = orchestrator.run({"user_prefs": user_prefs, "songs": songs})
             recommendations = result.get("recommendations", [])

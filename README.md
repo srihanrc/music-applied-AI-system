@@ -1,5 +1,9 @@
 # 🎵 Music Recommender Simulation
 
+## Title
+
+AI Music Recommender
+
 ## Project Summary
 
 In this project you will build and explain a small music recommender system.
@@ -15,11 +19,13 @@ Replace this paragraph with your own summary of what your version does.
 
 ---
 
+The goal of this project is to predict and recommend the songs the user would prefer listening to. The user would enter in the information as to what song types they prefer. The agent will look at the songs.csv file and compare each song with the user preferences and give each song a score based on the feature matches. Then based of the score the AI returns the top 3 songs in order that closely matches the users preferences. There's also human in the loop which allows the person to review the song details if the score was 0.
+
 ## How The System Works
 
 Explain your design in plain language.
 
-Real world recommendations work by combining user behavior like the songs they listen to, whether they skip or save the song.This also looks at the mood of the song lyrics the user likes and gives song recommendations of the same mood. This relies on different features like genre and even the artist that the user likes to listen to. My version will prioritize using features genre, mood, energy, tempo_bpm, valence, danceability and acousticness to predict a user's preferred music type
+This first starts with getting the input which is the songs from songs.csv. Then it does preprocessing and feature engineering where it extracts the important features used for the model. Then the recommender model scores songs based on features matches and how close numerical values of some features are to the user. The agent also allows for human review in case some songs don't get scored. Then the top 3 recommendations are given to the user in order.
 
 Some prompts to answer:
 
@@ -83,17 +89,17 @@ Paste a sample of your recommender's output here as a text block so a reader can
 #   2. ...
 #   3. ...
 ```
-Loading songs from data/songs.csv...
-
-Loaded songs: 19
-Top recommendations:
-
+PROFILE: Whitespace/case test
+Preferences: {'genre': '  POP  ', 'mood': 'Happy', 'energy': 0.8}
+Avg score: 3.61
+Sent to human review: False
+============================================================
 Title  : Sunrise City
 Artist : Neon Echo
 Genre  : pop
 Mood   : happy
-Score  : 5.94
-Reasons: genre match +2; mood match +1; energy closeness +2.94
+Score  : 4.94
+Reasons: genre match +2; energy closeness +2.94
 --------------------------------------------------
 Title  : Gym Hero
 Artist : Max Pulse
@@ -106,8 +112,8 @@ Title  : Rooftop Lights
 Artist : Indigo Parade
 Genre  : indie pop
 Mood   : happy
-Score  : 3.88
-Reasons: mood match +1; energy closeness +2.88
+Score  : 2.88
+Reasons: energy closeness +2.88
 --------------------------------------------------
 Title  : Night Drive Loop
 Artist : Neon Echo
@@ -123,6 +129,32 @@ Mood   : hype
 Score  : 2.76
 Reasons: energy closeness +2.76
 --------------------------------------------------
+
+[AGENTIC WORKFLOW]
+  Step 1: Running DataAgent...
+  Step 2: Running RecommenderAgent...
+    → Generated 5 recommendations
+  Step 3: Running PolicyAgent...
+    → Generated 5 recommendations
+  Step 4: Running EvalAgent...
+    → Average score: 0.00
+  Step 5: Running HumanReviewAgent...
+    → Sent to human review: True
+
+Loading songs from data/songs.csv...
+
+Loaded songs: 19
+
+[AGENTIC WORKFLOW]
+  Step 1: Running DataAgent...
+  Step 2: Running RecommenderAgent...
+    → Generated 5 recommendations
+  Step 3: Running PolicyAgent...
+    → Generated 5 recommendations
+  Step 4: Running EvalAgent...
+    → Average score: 3.61
+  Step 5: Running HumanReviewAgent...
+    → Sent to human review: False
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
 

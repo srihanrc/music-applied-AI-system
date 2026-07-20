@@ -85,14 +85,29 @@ class HumanReviewAgent(Agent):
 
 
 class Orchestrator:
-    def __init__(self, agents: List[Agent], human_threshold: float = 0.5):
+    def __init__(self, agents: List[Agent], human_threshold: float = 0.5, debug: bool = False):
         self.agents = agents
         self.human_threshold = human_threshold
+        self.debug = debug
 
     def run(self, context: Dict[str, Any]) -> Dict[str, Any]:
         state = dict(context)
-        for agent in self.agents:
+        for i, agent in enumerate(self.agents, 1):
+            agent_name = agent.__class__.__name__
+            if self.debug:
+                print(f"  Step {i}: Running {agent_name}...")
             out = agent.act(state)
             if out:
                 state.update(out)
+                if self.debug:
+                    # Show what this agent added/changed
+                    for key, value in out.items():
+                        if key == "recommendations":
+                            print(f"    → Generated {len(value)} recommendations")
+                        elif key == "avg_score":
+                            print(f"    → Average score: {value:.2f}")
+                        elif key == "sent_to_human":
+                            print(f"    → Sent to human review: {value}")
+                        else:
+                            print(f"    → {key}")
         return state
